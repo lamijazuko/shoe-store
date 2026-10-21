@@ -2,8 +2,10 @@
  * Application bootstrap.
  *
  * spapp turns every <section> inside <main id="spapp"> into a "page".
- * The URL hash decides which page is shown (#events, #clubs, ...),
+ * The URL hash decides which page is shown (#products, #cart, ...),
  * so navigation happens WITHOUT reloading the whole page (Single Page Application).
+ *
+ * The pages are static – there is NO backend and NO business logic yet.
  */
 $(document).ready(function () {
     // Pages that use the full-screen "auth" layout (no sidebar, no top bar)
@@ -29,8 +31,9 @@ $(document).ready(function () {
             .addClass("active");
 
         // 3. update the title in the top bar
-        const title = $('#main-nav .nav-link[href="#' + view + '"]').text().trim();
-        $("#page-title").text(title || "CampusEvents");
+        const title = $('#main-nav .nav-link[href="#' + view + '"]').text().trim()
+            || (view === "product-details" ? "Product details" : "ShoeStore");
+        $("#page-title").text(title);
 
         // 4. close the sidebar on mobile after a link was clicked
         const sidebar = bootstrap.Offcanvas.getInstance("#sidebar");

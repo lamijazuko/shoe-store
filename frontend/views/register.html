@@ -1,0 +1,39 @@
+<div class="auth-card card shadow-sm mx-auto my-4">
+    <div class="card-body">
+        <div class="text-center mb-4">
+            <img src="assets/img/logo.svg" class="auth-logo mb-2" alt="ShoeStore">
+            <h4 class="fw-bold mb-0">Create your account</h4>
+            <p class="text-muted small mb-0">Join ShoeStore and get 10% off your first order</p>
+        </div>
+
+        <!-- Static page – no backend yet -->
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">Full name</label>
+                <input type="text" class="form-control" id="name" placeholder="Anna Kovač">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" placeholder="you@example.com">
+            </div>
+            <div class="row g-2">
+                <div class="col-sm-6 mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="At least 8 characters">
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label for="confirm" class="form-label">Confirm password</label>
+                    <input type="password" class="form-control" id="confirm" placeholder="Repeat password">
+                </div>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="terms">
+                <label class="form-check-label small" for="terms">I agree to the Terms of Service</label>
+            </div>
+            <a href="#dashboard" class="btn btn-primary w-100">Create account</a>
+            <p class="text-center small text-muted mt-3 mb-0">
+                Already registered? <a href="#login">Sign in</a>
+            </p>
+        </form>
+    </div>
+</div>
