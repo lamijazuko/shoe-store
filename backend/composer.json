@@ -1,0 +1,8 @@
+{
+    "name": "lamija/shoe-store",
+    "description": "CampusEvents - REST API for the IT 2001 Web Programming lecture project",
+    "type": "project",
+    "require": {
+        "php": ">=8.2"
+    }
+}

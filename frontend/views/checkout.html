@@ -1,0 +1,77 @@
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Checkout</h1>
+        <p class="page-subtitle">Enter your details and place the order.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card mb-3">
+            <div class="card-header">Shipping details</div>
+            <div class="card-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="firstname" class="form-label">First name</label>
+                            <input type="text" placeholder="e.g. John" class="form-control" id="firstname">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="lastname" class="form-label">Last name</label>
+                            <input type="text" placeholder="e.g. Doe" class="form-control" id="lastname">
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Street and number">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" placeholder="e.g. Sarajevo" class="form-control" id="city">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" placeholder="e.g. +387 61 342 743" class="form-control" id="phone">
+                        </div>
+                        <div class="col-12">
+                            <label for="payment" class="form-label">Payment method</label>
+                            <select class="form-select" id="payment">
+                                <option>Credit / debit card</option>
+                                <option>Cash on delivery</option>
+                                <option>PayPal</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header">Your order</div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <div class="fw-semibold">Velocity Runner 2</div>
+                        <div class="small text-muted">Size EU 41 × 2</div>
+                    </div>
+                    <div class="fw-semibold">$179.98</div>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <div class="fw-semibold">Breeze Slide</div>
+                        <div class="small text-muted">Size EU 40 × 1</div>
+                    </div>
+                    <div class="fw-semibold">$34.90</div>
+                </div>
+                <hr>
+                <div class="summary-row"><span class="text-muted">Subtotal</span><span>$214.88</span></div>
+                <div class="summary-row"><span class="text-muted">Shipping</span><span>Free</span></div>
+                <div class="summary-row total"><span>Total</span><span>$214.88</span></div>
+                <a href="#orders" class="btn btn-primary w-100 mt-3"><i class="bi bi-bag-check"></i> Place order</a>
+                <a href="#cart" class="btn btn-outline-secondary w-100 mt-2">Back to cart</a>
+            </div>
+        </div>
+    </div>
+</div>
