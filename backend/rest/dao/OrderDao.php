@@ -12,12 +12,4 @@ class OrderDao extends BaseDao
             'total',
         ]);
     }
-
-    public function get_by_user($user_id)
-    {
-        return $this->query(
-            "SELECT * FROM orders WHERE user_id = :user_id ORDER BY id",
-            ['user_id' => $user_id]
-        );
-    }
 }

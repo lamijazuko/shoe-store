@@ -26,4 +26,24 @@ class Config
     {
         return '';
     }
+
+    public static function exchange_rate_api_key()
+    {
+        return 'YOUR_EXCHANGE_RATE_API_KEY';
+    }
+
+    public static function exchange_rate_api_url()
+    {
+        return 'https://v6.exchangerate-api.com/v6';
+    }
+
+    public static function exchange_rate_timeout_seconds()
+    {
+        return 5;
+    }
+
+    public static function exchange_rate_connect_timeout_seconds()
+    {
+        return 3;
+    }
 }

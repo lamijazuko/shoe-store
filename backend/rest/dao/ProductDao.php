@@ -15,12 +15,4 @@ class ProductDao extends BaseDao
             'stock',
         ]);
     }
-
-    public function get_by_category($category_id)
-    {
-        return $this->query(
-            "SELECT * FROM products WHERE category_id = :category_id ORDER BY id",
-            ['category_id' => $category_id]
-        );
-    }
 }

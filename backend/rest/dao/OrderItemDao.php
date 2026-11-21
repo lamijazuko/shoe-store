@@ -14,12 +14,4 @@ class OrderItemDao extends BaseDao
             'unit_price',
         ]);
     }
-
-    public function get_by_order($order_id)
-    {
-        return $this->query(
-            "SELECT * FROM order_items WHERE order_id = :order_id ORDER BY id",
-            ['order_id' => $order_id]
-        );
-    }
 }
