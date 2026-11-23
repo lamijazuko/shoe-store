@@ -1,8 +1,21 @@
 {
     "name": "lamija/shoe-store",
-    "description": "CampusEvents - REST API for the IT 2001 Web Programming lecture project",
+    "description": "ShoeStore - REST API for the IT 2001 Web Programming lecture project",
     "type": "project",
+    "license": "MIT",
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.2",
+        "flightphp/core": "^3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "rest/dao/",
+            "rest/services/"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        }
     }
 }

@@ -1,11 +1,17 @@
 <?php
-/*
- * Entry point of the REST API.
- * Every request to /backend/... is sent here (see .htaccess).
- * For now it only proves that PHP runs – FlightPHP and the real routes come in week 05.
- */
-header('Content-Type: application/json');
-echo json_encode([
-    'app' => 'ShoeStore API',
-    'message' => 'The backend is running.'
-]);
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/rest/routes/_helpers.php';
+
+Flight::map('notFound', function () {
+    api_halt(404, 'Endpoint not found.');
+});
+
+Flight::map('error', function ($error) {
+    api_halt(500, 'Internal server error.');
+});
+
+require_once __DIR__ . '/rest/routes/api.php';
+
+Flight::start();
