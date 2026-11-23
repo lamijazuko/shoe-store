@@ -1,0 +1,920 @@
+openapi: 3.0.3
+info:
+  title: ShoeStore API
+  version: 1.0.0
+  description: REST API for browsing shoes, managing store data, placing orders and reading exchange rates. JSON errors cover 400, 401, 403, 404 and 500 responses.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: /backend
+    description: Local development server
+security: []
+tags:
+  - name: Health
+    description: API status checks.
+  - name: Categories
+    description: CRUD operations for product categories.
+  - name: Products
+    description: CRUD operations for shoes.
+  - name: Users
+    description: CRUD operations for store users.
+  - name: Orders
+    description: CRUD operations for customer orders.
+  - name: Order Items
+    description: CRUD operations for lines inside orders.
+  - name: Exchange Rates
+    description: Live currency rates from the external provider.
+paths:
+  /api/v1/health:
+    get:
+      tags: [Health]
+      summary: Check that the API is running
+      operationId: getHealth
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    required: [app, status]
+                    properties:
+                      app:
+                        type: string
+                        example: ShoeStore API
+                      status:
+                        type: string
+                        example: ok
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/exchange-rates:
+    get:
+      tags: [Exchange Rates]
+      summary: Get live exchange rates from ExchangeRate-API
+      operationId: getExchangeRates
+      parameters:
+        - name: base
+          in: query
+          required: false
+          description: Three-letter base currency code.
+          schema:
+            type: string
+            default: USD
+            example: USD
+      responses:
+        '200':
+          description: Exchange rates
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExchangeRate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/categories:
+    get:
+      tags: [Categories]
+      summary: List categories
+      operationId: listCategories
+      responses:
+        '200':
+          description: All categories
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Categories]
+      summary: Create a category
+      operationId: createCategory
+      requestBody:
+        $ref: '#/components/requestBodies/CategoryInput'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Categories]
+      summary: Get one category
+      operationId: getCategory
+      responses:
+        '200':
+          description: Category found
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Category'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Categories]
+      summary: Replace a category
+      operationId: updateCategory
+      requestBody:
+        $ref: '#/components/requestBodies/CategoryInput'
+      responses:
+        '200':
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Categories]
+      summary: Delete a category
+      operationId: deleteCategory
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/products:
+    get:
+      tags: [Products]
+      summary: List products
+      operationId: listProducts
+      responses:
+        '200':
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Products]
+      summary: Create a product
+      operationId: createProduct
+      requestBody:
+        $ref: '#/components/requestBodies/ProductInput'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/products/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Products]
+      summary: Get one product
+      operationId: getProduct
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Products]
+      summary: Replace a product
+      operationId: updateProduct
+      requestBody:
+        $ref: '#/components/requestBodies/ProductInput'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Products]
+      summary: Delete a product
+      operationId: deleteProduct
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/users:
+    get:
+      tags: [Users]
+      summary: List users
+      operationId: listUsers
+      responses:
+        '200':
+          description: All users
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Users]
+      summary: Create a user
+      operationId: createUser
+      requestBody:
+        $ref: '#/components/requestBodies/UserInput'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Users]
+      summary: Get one user
+      operationId: getUser
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Users]
+      summary: Replace a user
+      operationId: updateUser
+      requestBody:
+        $ref: '#/components/requestBodies/UserInput'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Users]
+      summary: Delete a user
+      operationId: deleteUser
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/orders:
+    get:
+      tags: [Orders]
+      summary: List orders
+      operationId: listOrders
+      responses:
+        '200':
+          description: All orders
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Orders]
+      summary: Create an order
+      operationId: createOrder
+      requestBody:
+        $ref: '#/components/requestBodies/OrderInput'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/orders/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Orders]
+      summary: Get one order
+      operationId: getOrder
+      responses:
+        '200':
+          description: Order found
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Orders]
+      summary: Replace an order
+      operationId: updateOrder
+      requestBody:
+        $ref: '#/components/requestBodies/OrderInput'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Orders]
+      summary: Delete an order
+      operationId: deleteOrder
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/order-items:
+    get:
+      tags: [Order Items]
+      summary: List order items
+      operationId: listOrderItems
+      responses:
+        '200':
+          description: All order items
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Order Items]
+      summary: Create an order item
+      operationId: createOrderItem
+      requestBody:
+        $ref: '#/components/requestBodies/OrderItemInput'
+      responses:
+        '201':
+          description: Order item created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OrderItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/order-items/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Order Items]
+      summary: Get one order item
+      operationId: getOrderItem
+      responses:
+        '200':
+          description: Order item found
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OrderItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Order Items]
+      summary: Replace an order item
+      operationId: updateOrderItem
+      requestBody:
+        $ref: '#/components/requestBodies/OrderItemInput'
+      responses:
+        '200':
+          description: Order item updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OrderItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Order Items]
+      summary: Delete an order item
+      operationId: deleteOrderItem
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Numeric primary key.
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    BadRequest:
+      description: Validation failed or request body is not a JSON object.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: ExchangeRate-API rejected the configured key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: ExchangeRate-API forbids the configured key or plan.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Unexpected server or external API error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Deleted:
+      description: Resource deleted.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data]
+            properties:
+              data:
+                type: object
+                required: [deleted]
+                properties:
+                  deleted:
+                    type: boolean
+                    example: true
+  requestBodies:
+    CategoryInput:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CategoryInput'
+    ProductInput:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductInput'
+    UserInput:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserInput'
+    OrderInput:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrderInput'
+    OrderItemInput:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrderItemInput'
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [status, message]
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: name is required.
+    Category:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Sneakers
+    CategoryInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          example: Sneakers
+    Product:
+      type: object
+      required: [id, category_id, name, brand, description, price, stock]
+      properties:
+        id:
+          type: integer
+          example: 1
+        category_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Velocity Runner 2
+        brand:
+          type: string
+          example: Velocity
+        description:
+          type: string
+          nullable: true
+          example: Lightweight running shoe.
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 89.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 25
+    ProductInput:
+      type: object
+      required: [category_id, name, brand, price, stock]
+      properties:
+        category_id:
+          type: integer
+          minimum: 1
+          example: 1
+        name:
+          type: string
+          maxLength: 150
+          example: Velocity Runner 2
+        brand:
+          type: string
+          maxLength: 150
+          example: Velocity
+        description:
+          type: string
+          maxLength: 1000
+          example: Lightweight running shoe.
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 89.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 25
+    User:
+      type: object
+      required: [id, first_name, last_name, email, role]
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Anna
+        last_name:
+          type: string
+          example: Kovač
+        email:
+          type: string
+          format: email
+          example: anna@example.com
+        phone:
+          type: string
+          nullable: true
+          example: +387 61 342 743
+        role:
+          type: string
+          enum: [customer, admin]
+          example: customer
+    UserInput:
+      type: object
+      required: [first_name, last_name, email, password_hash, role]
+      properties:
+        first_name:
+          type: string
+          maxLength: 100
+          example: Anna
+        last_name:
+          type: string
+          maxLength: 100
+          example: Kovač
+        email:
+          type: string
+          format: email
+          example: anna@example.com
+        password_hash:
+          type: string
+          writeOnly: true
+          maxLength: 255
+          example: $2y$10$examplehash
+        phone:
+          type: string
+          maxLength: 50
+          example: +387 61 342 743
+        role:
+          type: string
+          enum: [customer, admin]
+          example: customer
+    Order:
+      type: object
+      required: [id, user_id, status, total]
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: [pending, paid, shipped, delivered, cancelled]
+          example: pending
+        total:
+          type: number
+          format: float
+          minimum: 0
+          example: 214.88
+    OrderInput:
+      type: object
+      required: [user_id, status, total]
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+          example: 1
+        status:
+          type: string
+          enum: [pending, paid, shipped, delivered, cancelled]
+          example: pending
+        total:
+          type: number
+          format: float
+          minimum: 0
+          example: 214.88
+    OrderItem:
+      type: object
+      required: [id, order_id, product_id, size, quantity, unit_price]
+      properties:
+        id:
+          type: integer
+          example: 1
+        order_id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 3
+        size:
+          type: string
+          example: "41"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        unit_price:
+          type: number
+          format: float
+          minimum: 0
+          example: 89.99
+    OrderItemInput:
+      type: object
+      required: [order_id, product_id, size, quantity, unit_price]
+      properties:
+        order_id:
+          type: integer
+          minimum: 1
+          example: 1
+        product_id:
+          type: integer
+          minimum: 1
+          example: 3
+        size:
+          type: string
+          maxLength: 10
+          example: "41"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        unit_price:
+          type: number
+          format: float
+          minimum: 0
+          example: 89.99
+    ExchangeRate:
+      type: object
+      required: [base, date, rates]
+      properties:
+        base:
+          type: string
+          example: USD
+        date:
+          type: string
+          nullable: true
+          example: Fri, 21 Nov 2026 00:00:01 +0000
+        rates:
+          type: object
+          additionalProperties:
+            type: number
+          example:
+            EUR: 0.92
+            BAM: 1.79
